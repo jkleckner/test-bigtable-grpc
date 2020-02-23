@@ -43,9 +43,9 @@ javacOptions in (Compile, compile) ++= Seq("-Xlint:unchecked", "-Xlint:deprecati
 
 /* dependencies */
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % sparkVersion, // % "provided",
-  "org.apache.spark" %% "spark-streaming" % sparkVersion, // % "provided",
-  "org.apache.spark" %% "spark-sql" % sparkVersion // % "provided"
+  "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
+  "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided",
+  "org.apache.spark" %% "spark-sql" % sparkVersion % "provided"
 )
 //libraryDependencies += "org.eclipse.jetty" % "jetty-servlet" % "9.3.27.v20190418"
 //libraryDependencies += "org.eclipse.jetty" % "jetty-util" %  "9.3.27.v20190418"
@@ -73,3 +73,28 @@ traceLevel := 5
 
 offline := false
 
+// Add dependencies into an assembly jar file
+
+mainClass in assembly := Some("com.cphy.seq2bigtable.Seq2Bigtable")
+
+assemblyMergeStrategy in assembly := {
+  // Discard module_info.class if using Java 8.  Revisit when upgraded. See: https://stackoverflow.com/a/55557287
+  // https://github.com/sbt/sbt-assembly/issues/370#issuecomment-496502318
+  case PathList("module-info.class") => MergeStrategy.discard
+  // Use endswith per: https://stackoverflow.com/questions/54834125/sbt-assembly-deduplicate-module-info-class?rq=1#comment103351597_55557287
+  case x if x.endsWith("/module-info.class") => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
+
+assembly / assemblyMergeStrategy := {
+  // Discard module_info.class if using Java 8.  Revisit when upgraded. See: https://stackoverflow.com/a/55557287
+  // https://github.com/sbt/sbt-assembly/issues/370#issuecomment-496502318
+  case PathList("module-info.class") => MergeStrategy.discard
+  // Use endswith per: https://stackoverflow.com/questions/54834125/sbt-assembly-deduplicate-module-info-class?rq=1#comment103351597_55557287
+  case x if x.endsWith("/module-info.class") => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}

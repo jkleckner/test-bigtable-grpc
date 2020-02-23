@@ -1,10 +1,11 @@
 
 .PHONY: build_and_push
-build_and_push: package build push
+build_and_push: assembly build push
 
-.PHONY: package
-package:
-	sbt -no-colors package
+.PHONY: assembly
+assembly:
+	rm -f target/scala-2.11/*.jar
+	sbt -no-colors assembly
 
 .PHONY: build
 build:
