@@ -1,0 +1,62 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  annotations:
+  name: tesla-test-0
+  namespace: spark
+  selfLink: /apis/sparkoperator.k8s.io/v1beta2/namespaces/spark/sparkapplications/tesla-test-0
+spec:
+# arguments:
+# - arg1
+  driver:
+    coreLimit: 1200m
+    cores: 1
+    envVars:
+      SEQ2BIGTABLE_PROJECT: "analytics-experiment"
+      SEQ2BIGTABLE_INSTANCE: "analytics-data-dev"
+      SEQ2BIGTABLE_TABLE: "test-gcp-deleteme"
+      SEQ2BIGTABLE_COLUMN_FAMILY: "v"
+      SEQ2BIGTABLE_VERBOSE: "true"
+    javaOptions: -Dlog4j.configuration=/opt/spark/work-dir/log4j.properties
+    labels:
+      version: 2.4.5
+    memory: 512m
+    serviceAccount: default
+    volumeMounts:
+    - mountPath: /tmp
+      name: test-volume
+  executor:
+    cores: 1
+    envVars:
+      SEQ2BIGTABLE_PROJECT: "analytics-experiment"
+      SEQ2BIGTABLE_INSTANCE: "analytics-data-dev"
+      SEQ2BIGTABLE_TABLE: "test-gcp-deleteme"
+      SEQ2BIGTABLE_COLUMN_FAMILY: "v"
+      SEQ2BIGTABLE_VERBOSE: "true"
+    instances: 1
+    javaOptions: -Dlog4j.configuration=/opt/spark/work-dir/log4j.properties
+    labels:
+      version: 2.4.5
+    memory: 512m
+    volumeMounts:
+    - mountPath: /tmp
+      name: test-volume
+# modify for current image
+  image: gcr.io/analytics-experiment/jim/test-bigtable-grpc/test-bigtable-grpc:v0.1.0-5-gb144fb5
+  mainApplicationFile: local:///opt/spark/work-dir/tes*.jar
+  mainClass: com.cphy.seq2bigtable.Seq2Bigtable
+  mode: cluster
+  restartPolicy:
+    type: Never
+# Note that this can be played with:
+  sparkConf:
+    spark.driver.userClassPathFirst: "true"
+    spark.executor.userClassPathFirst: "true"
+  sparkVersion: 2.4.5
+  timeToLiveSeconds: 3600
+  type: Scala
+  volumes:
+  - hostPath:
+      path: /tmp
+      type: Directory
+    name: test-volume
