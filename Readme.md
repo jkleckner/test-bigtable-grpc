@@ -21,3 +21,11 @@ java.lang.IllegalStateException: Could not find TLS ALPN provider; no working ne
 ```
 
 So the challenge is to sort out the conflicting dependencies.
+
+UPDATE:
+
+This was resolved as due to an erroneous mount over /tmp that was causing this problem.
+This was copied by me from some example I used as a starting point that was obviously not best practice.
+
+See: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/issues/815#issuecomment-592239293
+

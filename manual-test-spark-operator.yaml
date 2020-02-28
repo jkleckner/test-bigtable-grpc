@@ -21,9 +21,6 @@ spec:
       version: 2.4.5
     memory: 512m
     serviceAccount: default
-    volumeMounts:
-    - mountPath: /tmp
-      name: test-volume
   executor:
     cores: 1
     envVars:
@@ -37,9 +34,6 @@ spec:
     labels:
       version: 2.4.5
     memory: 512m
-    volumeMounts:
-    - mountPath: /tmp
-      name: test-volume
 # modify for current image
   image: gcr.io/analytics-experiment/jim/test-bigtable-grpc/test-bigtable-grpc:v0.1.0-5-gb144fb5
   mainApplicationFile: local:///opt/spark/work-dir/tes*.jar
